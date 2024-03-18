@@ -4,18 +4,19 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
-const products = require('./routes/products')
-
+const productRoutes = require('./routers/productRoutes');
+require('dotenv').config();
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb+srv://healworld:dZFLiPLj4nt3klwu@heal-world-app.eefvnaf.mongodb.net/?retryWrites=true&w=majority&appName=heal-world-app')
-  .then(() => console.log('connection successfully'))
-  .catch((err) => console.error(err))
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('เชื่อมต่อ MongoDB สำเร็จ'))
+  .catch(err => console.error('เกิดข้อผิดพลาดในการเชื่อมต่อ MongoDB:', err));
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
+var indexRouter = require('./routers/index');
+var usersRouter = require('./routers/users');
 
 var app = express();
 
@@ -31,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/products', products);
+app.use('/products', productRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
